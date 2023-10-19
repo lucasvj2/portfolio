@@ -38,7 +38,13 @@ import tripguide from "./tripguide.png";
 import brain from "./brain.glb";
 import particle from "./particle-texture.jpg";
 
+import whiteboard from './whiteboard.png'
+import ourshelters from './ourshelters.png'
+import portfolio from './portfolio.png'
+
 export {
+  ourshelters,
+  whiteboard,
   wb,
   emerson,
   vrtx,
@@ -74,4 +80,5 @@ export {
   next,
   brain,
   particle,
+  portfolio
 };

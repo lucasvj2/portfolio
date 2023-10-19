@@ -6,7 +6,7 @@ import { styles } from "../../styles";
 import { fadeIn, textVariant } from "../../utils/motion";
 import { useState, useEffect, useRef } from "react";
 
-import { useInView } from 'react-intersection-observer';
+import { useInView } from "react-intersection-observer";
 import { Profiler } from "react";
 
 const ProjectCard = ({
@@ -18,40 +18,24 @@ const ProjectCard = ({
   source_code_link,
 }) => {
   const [inViewRef, inView] = useInView({
-    threshold: 0.5, // At least 10% of the item is visible
+    threshold: 1, // At least 10% of the item is visible
   });
- 
+
   const scaleFactor = inView ? 1.5 : 1;
 
-
-  function onRenderCallback(
-    id, // the "id" prop of the Profiler tree that has just committed
-    phase, // either "mount" (if the tree just mounted) or "update" (if it re-rendered)
-    actualDuration, // time spent rendering the committed update
-    baseDuration, // estimated time to render the entire subtree without memoization
-    startTime, // when React began rendering this update
-    commitTime, // when React committed this update
-    interactions // the Set of interactions belonging to this update
-  ) {
-    console.log(actualDuration)
-  }
-
   return (
-        <div ref={inViewRef}>
-
-
-          <div style={{ perspective: "1000px" }}>
-            <img
-              src={image}
-              className="w-full h-full object-cover rounded-2xl duration-300"
-              style={{
-                  transform: `scale(${scaleFactor})`,
-                  transformStyle: "preserve-3d"
-                }}
-                />
-          </div>
-                </div>
-
+    <div ref={inViewRef} className={`w-[400px] ${index % 2 == 0 ? 'sekf-start' : 'self-end'}`}>
+      <div style={{ perspective: "1000px" }}>
+        <img
+          src={image}
+          className="w-full h-full object-cover rounded-2xl duration-300"
+          style={{
+            transform: `scale(${scaleFactor})`,
+            transformStyle: "preserve-3d",
+          }}
+        />
+      </div>
+    </div>
   );
 };
 
@@ -74,7 +58,7 @@ const Works = () => {
           manage projects effectively.
         </motion.p>
       </div>
-      <div className="mt-20 flex flex-col gap-60 bg-light">
+      <div className="mt-40 flex flex-col gap-60">
         {projects.map((project, index) => (
           <ProjectCard key={`project-${index}`} {...project} index={index} />
         ))}
