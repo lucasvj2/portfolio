@@ -205,15 +205,15 @@ const projects = [
       },
       {
         name: "aws",
-        color: "pink-text-gradient",
+        color: "white-text-gradient",
       },
       {
         name: "node",
-        color: "pink-text-gradient",
+        color: "orange-text-gradient",
       },
       {
         name: "docker",
-        color: "pink-text-gradient",
+        color: "yellow-text-gradient",
       },
     ],
     image: whiteboard,
@@ -258,6 +258,7 @@ const projects = [
     ],
     image: portfolio,
     source_code_link: "https://github.com/lucasvj2/portfolio",
+    live_link: ""
   },
 ];
 

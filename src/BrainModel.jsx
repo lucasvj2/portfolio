@@ -86,10 +86,10 @@ function BrainModel({ updatedAni }) {
     };
 
     const handleScroll = () => {
-      if (window.scrollY >= 500 && inInit) {
+      if (window.scrollY >= 300 && inInit) {
         animateToRandom();
         setInInit(false);
-      } else if (window.scrollY < 500 && !inInit) {
+      } else if (window.scrollY < 300 && !inInit) {
         animateToBrainShape();
         setInInit(true);
       }
