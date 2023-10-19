@@ -1,0 +1,131 @@
+import React, { useRef, useState, useEffect } from "react";
+import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber";
+import { PerspectiveCamera, useTexture, Environment, useGLTF } from "@react-three/drei";
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
+import { MeshSurfaceSampler } from "three/examples/jsm/math/MeshSurfaceSampler.js";
+import * as THREE from "three";
+
+function BrainModel() {
+    const [pointsGeometry, setPointsGeometry] = useState(null);
+    const { scene } = useGLTF('./src/assets/brain.glb');
+    const sampler = useRef(null);
+    const tempPosition = new THREE.Vector3();
+
+    const pointer = new THREE.Vector2()
+    const raycaster = new THREE.Raycaster()
+
+    const onMouseMove = (event) => {
+      pointer.x = (event.clientX / window.innerWidth) * 2 - 1
+      pointer.y = (event.clientY / window.innerHeight) * 2 + 1
+
+      raycaster.setFromCamera(pointer, test.camera)
+      const intersects = raycaster.intersectObject(test.scene.children)
+    }
+  
+    useEffect(() => {
+      if (scene) {
+        scene.traverse((obj) => {
+          if (obj.isMesh) {
+            sampler.current = new MeshSurfaceSampler(obj).build();
+          }
+        });
+        
+        const vertices = [];
+        for (let i = 0; i < 5000; i++) {
+          sampler.current.sample(tempPosition);
+          vertices.push(-tempPosition.y, -tempPosition.z, tempPosition.x);
+        }
+        
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute(
+          "position",
+          new THREE.Float32BufferAttribute(vertices, 3)
+        );
+        setPointsGeometry(geometry);
+      }
+    }, [scene]);
+
+    const pointsMaterial = new THREE.PointsMaterial({
+      color: 0x5c0b17,
+      size: 0.1,
+      blending: THREE.AdditiveBlending,
+      transparent: true,
+      opacity: 0.8,
+      depthWrite: false,
+      sizeAttenuation: true,
+      alphaMap: new THREE.TextureLoader().load("/src/assets/particle-texture.jpg"),
+    });
+  
+    return (
+      <>
+        {pointsGeometry && (
+          <points args={[pointsGeometry, pointsMaterial]}>
+          </points>
+        )}
+      </>
+    );
+}
+
+
+
+export default function Scene() {
+  const groupRef = useRef();
+  const cameraRef = useRef();
+  const lightRef = useRef();
+  const light2Ref = useRef();
+  let theta1 = 0;
+
+  useFrame(() => {
+    theta1 += 0.0025;
+
+    if (cameraRef.current) {
+      cameraRef.current.position.x = Math.sin(theta1) * 10;
+      cameraRef.current.position.z = Math.cos(theta1) * 10;
+      cameraRef.current.position.y = Math.cos(theta1);
+      cameraRef.current.lookAt(0, 0, 0);
+    }
+
+    if (lightRef.current && light2Ref.current) {
+      lightRef.current.position.x = Math.sin(theta1 + 1) * 11;
+      lightRef.current.position.z = Math.cos(theta1 + 1) * 11;
+      lightRef.current.position.y = 2 * Math.cos(theta1 - 3) + 3;
+
+      light2Ref.current.position.x = -Math.sin(theta1 + 1) * 11;
+      light2Ref.current.position.z = -Math.cos(theta1 + 1) * 11;
+      light2Ref.current.position.y = 2 * -Math.cos(theta1 - 3) - 6;
+    }
+
+    if (groupRef.current) {
+      groupRef.current.rotation.y += 0.01;
+    }
+  });
+
+  return (
+    <>
+      <group ref={groupRef}>
+        <PerspectiveCamera
+          ref={cameraRef}
+          makeDefault
+          position={[0, 0, 10]}
+          fov={45}
+        />
+        <directionalLight
+          ref={lightRef}
+          color={0x85ccb8}
+          intensity={7.5}
+          distance={20}
+          position={[0, 3, 2]}
+        />
+        <directionalLight
+          ref={light2Ref}
+          color={0x9f85cc}
+          intensity={7.5}
+          distance={20}
+          position={[0, 3, 2]}
+        />
+        <BrainModel />
+      </group>
+      <Environment files="https://raw.githubusercontent.com/miroleon/gradient_hdr_freebie/main/Gradient_HDR_Freebies/ml_gradient_freebie_01.hdr" />
+    </>
+  );
+}
