@@ -7,23 +7,20 @@ import {
   useGLTF,
   OrbitControls,
 } from "@react-three/drei";
-import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { MeshSurfaceSampler } from "three/examples/jsm/math/MeshSurfaceSampler.js";
 import * as THREE from "three";
 import * as TWEEN from "@tweenjs/tween.js";
 import { brain, particle } from "./assets";
+import { debounce } from 'lodash'; // or your preferred utility library
 
 function BrainModel({ updatedAni }) {
   const [pointsGeometry, setPointsGeometry] = useState(null);
   const [pointsMat, setPointsMat] = useState(null);
   const [inInit, setInInit] = useState(true);
-  const mousePos = useRef(new THREE.Vector3());
 
   const { scene } = useGLTF(brain);
   const sampler = useRef(null);
   const tempPosition = new THREE.Vector3();
-
-  const { gl } = useThree();
 
   const [initialPositions, setInitialPositions] = useState(null);
   const [targetPositions, setTargetPositions] = useState(null);
@@ -85,7 +82,7 @@ function BrainModel({ updatedAni }) {
       }
     };
 
-    const handleScroll = () => {
+    const handleScroll = debounce(() => {
       if (window.scrollY >= 300 && inInit) {
         animateToRandom();
         setInInit(false);
@@ -93,7 +90,7 @@ function BrainModel({ updatedAni }) {
         animateToBrainShape();
         setInInit(true);
       }
-    };
+    }, 100);
 
     window.addEventListener("scroll", handleScroll);
     // Clean up
@@ -102,24 +99,6 @@ function BrainModel({ updatedAni }) {
     };
   }, [inInit, pointsGeometry, initialPositions, targetPositions]);
 
-  useEffect(() => {
-    const handleMouseMove = (event) => {
-      // normalize mouse position from -0.5 to 0.5
-      const mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-      const mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
-
-      // Set the mouse position
-      mousePos.current.set(mouseX, mouseY, 0);
-    };
-
-    // Attach the event listener
-    gl.domElement.addEventListener("mousemove", handleMouseMove);
-
-    // Clean up
-    return () => {
-      gl.domElement.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, [gl]);
 
   useEffect(() => {
     if (scene) {
@@ -168,29 +147,6 @@ function BrainModel({ updatedAni }) {
         alphaMap: new THREE.TextureLoader().load(particle),
       });
 
-      pointsMaterial.onBeforeCompile = function (shader) {
-        shader.uniforms.mousePos = { value: mousePos.current };
-
-        shader.vertexShader = `
-                uniform vec3 mousePos;
-                varying float vNormal;
-                varying float vDistance;
-                
-                ${shader.vertexShader}`.replace(
-          `#include <begin_vertex>`,
-          `#include <begin_vertex>   
-                  vec3 seg = position - mousePos;
-                  vec3 dir = normalize(seg);
-                  float dist = length(seg);
-                  vDistance = dist;
-                  if (dist < 5.0){
-                      float force = clamp(0.3 / (dist * dist), -0., .1);
-                    transformed += dir * force;
-                    vNormal = force /0.5;
-                  }
-                `
-        );
-      };
 
       let completedTweens = 0;
 

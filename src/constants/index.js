@@ -8,7 +8,6 @@ import {
   html,
   css,
   reactjs,
-  redux,
   tailwind,
   nodejs,
   mongodb,
@@ -18,9 +17,6 @@ import {
   vrtx,
   wb,
   emerson,
-  carrent,
-  jobit,
-  tripguide,
   threejs,
   danville,
   python,
@@ -32,6 +28,8 @@ import {
   ourshelters,
   portfolio
 } from "../assets";
+
+import {AiOutlineGithub, AiOutlineLinkedin } from 'react-icons/ai'
 
 const navLinks = [
   {
@@ -185,6 +183,17 @@ const experiences = [
   },
 ];
 
+const socials = [
+  {
+    name: 'github',
+    icon: AiOutlineGithub
+  },
+  {
+    name: 'linkedIn',
+    icon: AiOutlineLinkedin
+  }
+]
+
 const projects = [
   {
     name: "Whiteboard AI",
@@ -268,4 +277,5 @@ export {
   experiences,
   projects,
   navLinks,
+  socials
 };

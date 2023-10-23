@@ -35,6 +35,13 @@ html::-webkit-scrollbar {
   display: none;
 }
 
+.purple-blue-gradient {
+  -webkit-background-clip: text;
+  background-clip: text;
+  background-image: linear-gradient(90deg,#b17ad7,#978fe9,#7ea2f4,#6ab2f7,#64c0f4);
+  color: transparent;
+}
+
 .green-pink-gradient {
   background: "#00cea8";
   background: linear-gradient(90.13deg, #00cea8 1.9%, #bf61ff 97.5%);
@@ -86,9 +93,11 @@ html::-webkit-scrollbar {
 @keyframes fadeIn {
   0% {
     opacity: 0%;
+
   }
   100% {
-    opacity: 100%
+    opacity: 100%;
+
   }
 }
 

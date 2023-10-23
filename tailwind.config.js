@@ -13,11 +13,13 @@ export default {
       transparent: "transparent",
       current: "currentColor",
       purple: "#362934",
+      lighter: '##fffbf5',
       light: "#e1d7c9",
       medium: "#d5cabe",
       dark: "#a69290",
       blue: "#687f9a",
       dblue: "#1d1838",
+      black: "#263c61"
     },
     extend: {
     },
